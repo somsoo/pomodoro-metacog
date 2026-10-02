@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>메타인지 포모도로 & 딥워크 로그 | 집중력 분석 타이머</title>
+  <meta name="description" content="단순 타이머를 넘어 세션 종료 후 집중도와 방해요인을 기록·분석하는 메타인지 포모도로 타이머입니다. 백그라운드 무오차 타이머와 딥워크 로그를 무료로 이용하세요.">
+  <meta name="keywords" content="포모도로 타이머, 메타인지, 딥워크, 공부 타이머, 수능 타이머, 집중력 향상, 뽀모도로, 백색소음 타이머">
+  <meta name="author" content="Enjoy Onepage">
+  <link rel="canonical" href="https://pomodoro-metacog.enjoy-onepage.com/">
+  
+  <!-- Open Graph / SNS -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pomodoro-metacog.enjoy-onepage.com/">
+  <meta property="og:title" content="메타인지 포모도로 & 딥워크 로그 | 집중력 분석 타이머">
+  <meta property="og:description" content="단순 타이머를 넘어 집중도와 방해요인을 분석하는 메타인지 포모도로 타이머. 무료 딥워크 로그 제공.">
+  <meta property="og:image" content="https://pomodoro-metacog.enjoy-onepage.com/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Favicon & Manifest -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍅</text></svg>">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+  
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2228289204702106" crossorigin="anonymous"></script>
+  
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- 상단 광고 배너 (모바일 90px 엄격 클램핑) -->
+  <!-- 상단 광고 배너 (모바일 90px 엄격 클램핑) -->
+  <div class="ad-box ad-top">
+    <ins class="adsbygoogle" style="display:inline-block;width:100%;height:60px" data-ad-client="ca-pub-2228289204702106" data-ad-slot="3824727725" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">🍅</span>
+        <h1 class="brand-title">메타인지 포모도로 & 딥워크 로그</h1>
+      </div>
+      <p class="brand-tagline">시간 측정에 자기성찰을 더해 진짜 몰입 습관을 만듭니다</p>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- 모드 선택 바 -->
+    <nav class="mode-nav" aria-label="타이머 모드 선택">
+      <div class="mode-buttons-grid">
+        <button type="button" class="mode-btn active" data-mode="pomodoro" data-work="25" data-break="5">
+          <span class="mode-name">표준 25m</span>
+          <span class="mode-sub">휴식 5m</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="deepwork" data-work="50" data-break="10">
+          <span class="mode-name">딥워크 50m</span>
+          <span class="mode-sub">휴식 10m</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="korean" data-work="80" data-break="15">
+          <span class="mode-name">수능국어 80m</span>
+          <span class="mode-sub">휴식 15m</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="math" data-work="100" data-break="20">
+          <span class="mode-name">수능수학 100m</span>
+          <span class="mode-sub">휴식 20m</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- 중앙 타이머 카드 -->
+    <section class="card timer-card" aria-label="타이머 본체">
+      <div class="timer-status-badge" id="timerStatusBadge">
+        <span class="status-dot"></span>
+        <span id="timerStatusText">몰입 집중 세션</span>
+      </div>
+
+      <!-- 원형 프로그레스 SVG -->
+      <div class="timer-dial-wrapper">
+        <svg class="timer-dial" viewBox="0 0 260 260" aria-hidden="true">
+          <circle class="dial-bg" cx="130" cy="130" r="115"></circle>
+          <circle class="dial-progress" id="dialProgress" cx="130" cy="130" r="115"
+                  stroke-dasharray="722.56" stroke-dashoffset="0"></circle>
+        </svg>
+        <div class="timer-display-inner">
+          <div class="time-readout" id="timeDisplay" aria-live="polite">25:00</div>
+          <div class="session-target-info" id="sessionTarget">목표: 25분 집중</div>
+        </div>
+      </div>
+
+      <!-- 제어 버튼군 -->
+      <div class="timer-controls-grid">
+        <button type="button" class="action-btn btn-primary" id="btnToggleTimer">
+          <span class="btn-icon" id="toggleIcon">▶</span>
+          <span id="toggleText">집중 시작</span>
+        </button>
+        <button type="button" class="action-btn btn-secondary" id="btnResetTimer">
+          <span class="btn-icon">↺</span>
+          <span>초기화</span>
+        </button>
+        <button type="button" class="action-btn btn-ghost" id="btnSkipTimer">
+          <span class="btn-icon">⏭</span>
+          <span id="skipText">휴식 건너뛰기</span>
+        </button>
+      </div>
+
+      <!-- 오디오 & 집중 사운드 토글 -->
+      <div class="audio-controls-row">
+        <button type="button" class="sound-toggle-btn active" id="btnSoundAlert">
+          <span class="toggle-icon">🔔</span>
+          <span class="toggle-label">알림음 켜짐</span>
+        </button>
+        <button type="button" class="sound-toggle-btn" id="btnWhiteNoise">
+          <span class="toggle-icon">🌊</span>
+          <span class="toggle-label">몰입 노이즈 끔</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 중단 광고 배너 -->
+    <aside class="ad-slot ad-mid" aria-label="스폰서 광고">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-2228289204702106"
+           data-ad-slot="1186914926"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+
+    <!-- 오늘의 메타인지 분석 대시보드 -->
+    <section class="card dashboard-card">
+      <div class="card-header">
+        <h2 class="card-title">오늘의 딥워크 메타인지 분석</h2>
+        <span class="card-badge" id="todayDateBadge">오늘</span>
+      </div>
+
+      <div class="stats-pills-grid">
+        <div class="stat-pill">
+          <div class="stat-label">총 몰입 시간</div>
+          <div class="stat-value" id="statTotalMinutes">0<span class="stat-unit">분</span></div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-label">완료 세션</div>
+          <div class="stat-value" id="statCompletedCount">0<span class="stat-unit">회</span></div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-label">평균 집중도</div>
+          <div class="stat-value" id="statAvgRating">0.0<span class="stat-unit">/ 5</span></div>
+        </div>
+      </div>
+
+      <!-- 방해요인 분포 차트 -->
+      <div class="distraction-section">
+        <h3 class="section-subtitle">주요 몰입 방해요인 분석</h3>
+        <div class="distraction-bars" id="distractionBars">
+          <p class="empty-hint">세션을 완료하고 메타인지를 기록하면 방해요인 분석이 표시됩니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 세션 기록 타임라인 -->
+    <section class="card history-card">
+      <div class="card-header">
+        <h2 class="card-title">최근 딥워크 세션 로그</h2>
+        <div class="history-actions">
+          <button type="button" class="btn-text-action" id="btnClearHistory">기록 삭제</button>
+        </div>
+      </div>
+      <div class="session-list" id="sessionList">
+        <p class="empty-hint">아직 완료된 세션이 없습니다. 첫 타이머를 시작해보세요!</p>
+      </div>
+    </section>
+
+    <!-- 메타인지 가이드 아티클 -->
+    <article class="card guide-card">
+      <h2 class="card-title">왜 단순 타이머 대신 메타인지 기록인가?</h2>
+      <div class="guide-content">
+        <div class="guide-item">
+          <h3 class="guide-heading">1. 시간의 양보다 중요한 '주의 집중의 질'</h3>
+          <p class="guide-text">책상 앞에 8시간 앉아있어도 스마트폰을 수시로 만지면 실제 딥워크(Deep Work) 시간은 2시간에 불과합니다. 세션 직후 자신의 몰입도를 자가 평가하는 행위 자체가 전두엽의 메타인지 회로를 활성화하여 다음 세션의 집중력을 37% 이상 끌어올립니다.</p>
+        </div>
+        <div class="guide-item">
+          <h3 class="guide-heading">2. 방해요인을 알면 차단할 수 있다</h3>
+          <p class="guide-text">집중이 깨지는 원인은 막연하지 않습니다. 'SNS 알림', '잡념', '수면 부족', '주변 소음' 중 내가 가장 자주 겪는 요인을 매 세션 기록하면, 환경을 물리적으로 격리(스마트폰 딴 방 두기, 노이즈 캔슬링 등)하는 실질적 개선책이 도출됩니다.</p>
+        </div>
+        <div class="guide-item">
+          <h3 class="guide-heading">3. 백그라운드 무오차 Web Worker 시스템</h3>
+          <p class="guide-text">대부분의 웹 타이머는 다른 탭으로 이동 시 브라우저 절전 정책으로 인해 타이머가 멈추거나 시간이 늘어집니다. 본 타이머는 백그라운드 스레드(Web Worker)와 타임스탬프 델타 연산을 적용하여 1초의 오차도 없이 정확하게 동작합니다.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- 하단 광고 배너 -->
+    <aside class="ad-slot ad-bottom" aria-label="스폰서 광고">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-2228289204702106"
+           data-ad-slot="3416334507"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+  </main>
+
+  <!-- 메타인지 기록 모달 다이얼로그 -->
+  <dialog class="metacog-modal" id="metacogModal" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-icon">🎯</span>
+        <h2 class="modal-title" id="modalTitle">세션 완료! 3초 메타인지 성찰</h2>
+      </div>
+      <p class="modal-desc">방금 마친 세션의 몰입 상태를 솔직하게 돌아보세요.</p>
+
+      <form id="metacogForm" method="dialog">
+        <!-- 집중도 평가 (1~5점) -->
+        <fieldset class="form-fieldset">
+          <legend class="fieldset-legend">이번 세션 몰입도 평가</legend>
+          <div class="rating-stars" id="starRatingGroup">
+            <button type="button" class="star-btn active" data-val="1" aria-label="1점 (매우 산만)">★</button>
+            <button type="button" class="star-btn active" data-val="2" aria-label="2점 (산만함)">★</button>
+            <button type="button" class="star-btn active" data-val="3" aria-label="3점 (보통 몰입)">★</button>
+            <button type="button" class="star-btn active" data-val="4" aria-label="4점 (높은 몰입)">★</button>
+            <button type="button" class="star-btn active" data-val="5" aria-label="5점 (완전 몰입)">★</button>
+          </div>
+          <div class="rating-text" id="ratingDesc">5점: 완전한 몰입 (초집중 달성)</div>
+        </fieldset>
+
+        <!-- 방해요인 태그 다중 선택 -->
+        <fieldset class="form-fieldset">
+          <legend class="fieldset-legend">집중을 방해한 요인은? (선택)</legend>
+          <div class="distraction-tags-grid" id="distractionTagGrid">
+            <button type="button" class="tag-chip active" data-tag="완전몰입(없음)">✨ 완전몰입(없음)</button>
+            <button type="button" class="tag-chip" data-tag="스마트폰/SNS">📱 스마트폰/SNS</button>
+            <button type="button" class="tag-chip" data-tag="딴생각/잡념">💭 딴생각/잡념</button>
+            <button type="button" class="tag-chip" data-tag="졸음/피로">🥱 졸음/피로</button>
+            <button type="button" class="tag-chip" data-tag="주변소음">🔊 주변소음</button>
+            <button type="button" class="tag-chip" data-tag="급한연락">💬 급한연락</button>
+          </div>
+        </fieldset>
+
+        <!-- 작업 한 줄 요약 -->
+        <div class="form-field">
+          <label for="taskNoteInput" class="field-label">수행한 작업 요약 (선택)</label>
+          <input type="text" id="taskNoteInput" class="text-input" placeholder="예: 수능 국어 2지문 풀이 및 분석" maxlength="60">
+        </div>
+
+        <div class="modal-actions-grid">
+          <button type="submit" class="action-btn btn-primary" id="btnSubmitMetacog">
+            <span>기록 저장 및 휴식 시작</span>
+          </button>
+          <button type="button" class="action-btn btn-ghost" id="btnSkipMetacog">
+            <span>기록 건너뛰기</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- 푸터 링크 -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <nav class="footer-nav" aria-label="바닥글 정보">
+        <a href="about.html" class="footer-link">서비스 소개</a>
+        <span class="footer-sep">·</span>
+        <a href="privacy.html" class="footer-link">개인정보처리방침</a>
+        <span class="footer-sep">·</span>
+        <a href="https://enjoy-onepage.com" class="footer-link" target="_blank" rel="noopener">원페이지 허브</a>
+      </nav>
+      <p class="footer-copy">&copy; 2026 Enjoy Onepage. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/audio.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

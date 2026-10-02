@@ -1,0 +1,16 @@
+{
+  "name": "메타인지 포모도로 & 딥워크 로그",
+  "short_name": "메타포모도로",
+  "description": "집중도와 방해요인을 기록하는 스마트 포모도로 타이머",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍅</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

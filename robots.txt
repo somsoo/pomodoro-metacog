@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pomodoro-metacog.enjoy-onepage.com/sitemap.xml
