@@ -165,6 +165,10 @@
       <div class="card-header">
         <h2 class="card-title">최근 딥워크 세션 로그</h2>
         <div class="history-actions">
+          <button type="button" class="btn-text-action" id="btnSharePreset" title="현재 타이머 설정을 링크로 공유">🔗 설정 공유</button>
+          <button type="button" class="btn-text-action" id="btnExportHistory" title="모든 세션 로그 및 메타인지 일지 백업 다운로드">💾 JSON 백업</button>
+          <button type="button" class="btn-text-action" id="btnImportHistory" title="JSON 백업 파일 복원">📂 JSON 복원</button>
+          <input type="file" id="pomodoroFileInput" accept=".json" style="display:none;">
           <button type="button" class="btn-text-action" id="btnClearHistory">기록 삭제</button>
         </div>
       </div>

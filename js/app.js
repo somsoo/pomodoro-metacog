@@ -67,11 +67,41 @@ document.addEventListener('DOMContentLoaded', () => {
   // ------------------------------------------------------------------------
   // 1. 초기화 및 대시보드 렌더링
   // ------------------------------------------------------------------------
-  function init() {
+  async function init() {
     renderDashboard();
     setupEventListeners();
+    MetacogStorage.ensurePersistedStorage();
+    await checkUrlHash();
     updateDisplay();
     todayDateBadge.textContent = MetacogStorage.getTodayDateString();
+  }
+
+  async function checkUrlHash() {
+    const hash = window.location.hash;
+    if (!hash.startsWith('#data=')) return;
+    try {
+      const base64 = hash.replace('#data=', '')
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      const stream = new Blob([bytes]).stream();
+      const decompressedStream = stream.pipeThrough(new DecompressionStream('deflate'));
+      const response = await new Response(decompressedStream);
+      const jsonStr = await response.text();
+      const stateObj = JSON.parse(jsonStr);
+      if (stateObj && stateObj.workMin) {
+        workDurationSec = stateObj.workMin * 60;
+        breakDurationSec = (stateObj.breakMin || 5) * 60;
+        resetTimerState();
+        sessionTarget.textContent = `공유 모드: ${stateObj.workMin}분 몰입 / ${stateObj.breakMin || 5}분 휴식`;
+      }
+    } catch (e) {
+      console.error("URL 해시 복원 실패:", e);
+    }
   }
 
   // ------------------------------------------------------------------------
@@ -471,6 +501,76 @@ document.addEventListener('DOMContentLoaded', () => {
         renderDashboard();
       }
     });
+
+    // 🔗 URL 타이머 프리셋 공유
+    const btnSharePreset = document.getElementById('btnSharePreset');
+    if (btnSharePreset) {
+      btnSharePreset.addEventListener('click', async () => {
+        try {
+          const stateObj = {
+            workMin: Math.round(workDurationSec / 60),
+            breakMin: Math.round(breakDurationSec / 60),
+            name: sessionTarget.textContent
+          };
+          const jsonStr = JSON.stringify(stateObj);
+          const stream = new Blob([jsonStr]).stream();
+          const compressedStream = stream.pipeThrough(new CompressionStream('deflate'));
+          const response = await new Response(compressedStream);
+          const buffer = await response.arrayBuffer();
+          const bytes = new Uint8Array(buffer);
+          let binary = '';
+          for (let i = 0; i < bytes.byteLength; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          const base64 = btoa(binary)
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
+          const shareUrl = `${window.location.origin}${window.location.pathname}#data=${base64}`;
+          await navigator.clipboard.writeText(shareUrl);
+          window.location.hash = `data=${base64}`;
+          alert(`🎉 타이머 설정 공유 링크가 클립보드에 복사되었습니다!\n\n${shareUrl}`);
+        } catch (err) {
+          alert("공유 링크 생성 실패: " + err.message);
+        }
+      });
+    }
+
+    // 💾 JSON 백업 다운로드
+    const btnExportHistory = document.getElementById('btnExportHistory');
+    if (btnExportHistory) {
+      btnExportHistory.addEventListener('click', () => {
+        MetacogStorage.exportJson();
+      });
+    }
+
+    // 📂 JSON 복원
+    const btnImportHistory = document.getElementById('btnImportHistory');
+    const pomodoroFileInput = document.getElementById('pomodoroFileInput');
+    if (btnImportHistory && pomodoroFileInput) {
+      btnImportHistory.addEventListener('click', () => {
+        pomodoroFileInput.click();
+      });
+      pomodoroFileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            try {
+              const parsed = JSON.parse(ev.target.result);
+              const result = MetacogStorage.importJson(parsed);
+              renderDashboard();
+              alert(`📂 세션 로그 복원 완료! 총 ${result.total}개 세션 (신규 추가 ${result.added}개)`);
+            } catch (err) {
+              alert("백업 파일 복원 실패: " + err.message);
+            }
+          };
+          reader.readAsText(e.target.files[0]);
+        }
+      });
+    }
+
+    window.addEventListener('hashchange', checkUrlHash);
+
 
     // 모달 별점 클릭
     starRatingGroup.addEventListener('click', (e) => {
